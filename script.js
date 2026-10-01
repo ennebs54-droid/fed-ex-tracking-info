@@ -153,6 +153,7 @@ const TRACKING_DATA = {
     courier: 'FedEx',
     company: 'FedEx',
     location: '159 Baker St, Homer, GA 30547',
+    showAsDestination: true,
     estimatedDelivery: null,
     latestUpdate: 'Package is held pending custom fee payment before it can be released for delivery.',
     fee: '$40',
@@ -282,6 +283,7 @@ function showResult(data) {
   courierInfo.textContent = data.courier;
   companyName.textContent = data.company;
   packageLocation.textContent = data.location;
+  document.querySelector('#packageLocation').closest('.card').querySelector('.section-label').textContent = data.showAsDestination ? 'Destination' : 'Location';
   latestUpdate.textContent = data.latestUpdate;
   shippedAddressField.innerHTML = data.originAddress.replace(/, /g, '<br>');
   setStatusBadge(data.status);
@@ -340,6 +342,7 @@ trackForm.addEventListener('submit', async (event) => {
     fee: base.fee || null,
     progress: base.progress,
     originAddress: base.originAddress,
+    showAsDestination: base.showAsDestination || false,
     timeline: buildTimeline(base.timelineTemplate, now)
   };
 
