@@ -130,39 +130,37 @@ const TRACKING_DATA = {
     deliveryDays: 4
   },
   SYEW26767: {
-    status: 'Awaiting Custom Fee Payment',
+    status: 'Out for Delivery',
     courier: 'FedEx',
     company: 'FedEx',
     location: 'Columbus, Ohio, USA',
     estimatedDelivery: null,
-    latestUpdate: 'Package is held pending custom fee payment before it can be released for delivery.',
-    fee: '$65',
-    progress: ['Ordered', 'Confirmed', 'Shipped'],
+    latestUpdate: 'Package is out for delivery and will arrive today.',
+    progress: ['Ordered', 'Confirmed', 'Shipped', 'Out for Delivery'],
     timelineTemplate: [
-      { hoursAgo: 1.0,  event: 'Awaiting Custom Fee Payment', note: 'Package is held at the Ohio facility. Custom fee payment required before release.' },
-      { hoursAgo: 1.2,  event: 'Arrived at Ohio facility',   note: 'Package arrived at Columbus, Ohio distribution center.' },
-      { hoursAgo: 1.4,  event: 'Shipment picked up',         note: 'Pickup confirmed by UPS courier.' },
-      { hoursAgo: 1.6,  event: 'Shipment processed',         note: 'Shipment has entered the carrier network.' }
+      { hoursAgo: 0.1,  event: 'Out for Delivery',          note: 'Package is on the vehicle for delivery today.' },
+      { hoursAgo: 0.3,  event: 'Arrived at Ohio facility',  note: 'Package arrived at Columbus, Ohio distribution center.' },
+      { hoursAgo: 0.5,  event: 'Shipment picked up',        note: 'Pickup confirmed by FedEx courier.' },
+      { hoursAgo: 0.7,  event: 'Shipment processed',        note: 'Shipment has entered the carrier network.' }
     ],
     originAddress: 'Toledo, Ohio, USA',
     useIpLocation: true,
     deliveryDays: 4
   },
   GYK789273: {
-    status: 'Awaiting Custom Fee Payment',
+    status: 'Out for Delivery',
     courier: 'FedEx',
     company: 'FedEx',
     location: '159 Baker St, Homer, GA 30547',
     showAsDestination: true,
     estimatedDelivery: null,
-    latestUpdate: 'Package is held pending custom fee payment before it can be released for delivery.',
-    fee: '$40',
-    progress: ['Ordered', 'Confirmed', 'Shipped'],
+    latestUpdate: 'Package is out for delivery and will arrive today.',
+    progress: ['Ordered', 'Confirmed', 'Shipped', 'Out for Delivery'],
     timelineTemplate: [
-      { hoursAgo: 0.1,  event: 'Awaiting Custom Fee Payment', note: 'Package is held at the facility. Custom fee payment required before release.' },
-      { hoursAgo: 0.2,  event: 'Arrived at facility',        note: 'Package arrived at Toledo, Ohio distribution center.' },
-      { hoursAgo: 0.35, event: 'Shipment picked up',         note: 'Pickup confirmed by FedEx courier.' },
-      { hoursAgo: 0.5,  event: 'Shipment processed',         note: 'Shipment has entered the carrier network.' }
+      { hoursAgo: 0.1,  event: 'Out for Delivery',   note: 'Package is on the vehicle for delivery today.' },
+      { hoursAgo: 0.3,  event: 'Arrived at facility', note: 'Package arrived at Toledo, Ohio distribution center.' },
+      { hoursAgo: 0.5,  event: 'Shipment picked up',  note: 'Pickup confirmed by FedEx courier.' },
+      { hoursAgo: 0.7,  event: 'Shipment processed',  note: 'Shipment has entered the carrier network.' }
     ],
     originAddress: 'Toledo, Ohio, USA',
     deliveryDays: 4
