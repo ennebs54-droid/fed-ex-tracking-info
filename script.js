@@ -135,17 +135,17 @@ const TRACKING_DATA = {
     company: 'FedEx',
     location: 'Columbus, Ohio, USA',
     estimatedDelivery: null,
-    latestUpdate: 'Package is out for delivery and will arrive today.',
+    latestUpdate: 'Package is out for delivery and is expected to be delivered tomorrow.',
     progress: ['Ordered', 'Confirmed', 'Shipped', 'Out for Delivery'],
     timelineTemplate: [
-      { hoursAgo: 0.1,  event: 'Out for Delivery',          note: 'Package is on the vehicle for delivery today.' },
+      { hoursAgo: 0.1,  event: 'Out for Delivery',          note: 'Package is on the vehicle. Expected delivery tomorrow.' },
       { hoursAgo: 0.3,  event: 'Arrived at Ohio facility',  note: 'Package arrived at Columbus, Ohio distribution center.' },
       { hoursAgo: 0.5,  event: 'Shipment picked up',        note: 'Pickup confirmed by FedEx courier.' },
       { hoursAgo: 0.7,  event: 'Shipment processed',        note: 'Shipment has entered the carrier network.' }
     ],
     originAddress: 'Toledo, Ohio, USA',
     useIpLocation: true,
-    deliveryDays: 4
+    deliveryDays: 1
   },
   GYK789273: {
     status: 'Out for Delivery',
