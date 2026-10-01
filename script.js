@@ -130,22 +130,23 @@ const TRACKING_DATA = {
     deliveryDays: 4
   },
   SYEW26767: {
-    status: 'Out for Delivery',
+    status: 'Delivered',
     courier: 'FedEx',
     company: 'FedEx',
-    location: 'Columbus, Ohio, USA',
+    location: 'FedEx Office — Held due to address error',
     estimatedDelivery: null,
-    latestUpdate: 'Package is out for delivery and is expected to be delivered tomorrow.',
-    progress: ['Ordered', 'Confirmed', 'Shipped', 'Out for Delivery'],
+    latestUpdate: 'Package has been delivered to a FedEx Office location. Delivery to original address was unsuccessful due to an address error.',
+    progress: ['Ordered', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'],
     timelineTemplate: [
-      { hoursAgo: 0.1,  event: 'Out for Delivery',          note: 'Package is on the vehicle. Expected delivery tomorrow.' },
-      { hoursAgo: 0.3,  event: 'Arrived at Ohio facility',  note: 'Package arrived at Columbus, Ohio distribution center.' },
-      { hoursAgo: 0.5,  event: 'Shipment picked up',        note: 'Pickup confirmed by FedEx courier.' },
-      { hoursAgo: 0.7,  event: 'Shipment processed',        note: 'Shipment has entered the carrier network.' }
+      { hoursAgo: 0.1,  event: 'Delivered to FedEx Office',  note: 'Package held at FedEx Office due to address error. Please contact FedEx to arrange redelivery.' },
+      { hoursAgo: 0.3,  event: 'Delivery attempted',         note: 'Delivery unsuccessful — address error detected.' },
+      { hoursAgo: 0.5,  event: 'Out for Delivery',           note: 'Package was on the vehicle for delivery.' },
+      { hoursAgo: 0.7,  event: 'Arrived at Ohio facility',   note: 'Package arrived at Columbus, Ohio distribution center.' },
+      { hoursAgo: 0.9,  event: 'Shipment processed',         note: 'Shipment has entered the carrier network.' }
     ],
     originAddress: 'Toledo, Ohio, USA',
-    useIpLocation: true,
-    deliveryDays: 1
+    useIpLocation: false,
+    deliveryDays: 0
   },
   GYK789273: {
     status: 'Out for Delivery',
