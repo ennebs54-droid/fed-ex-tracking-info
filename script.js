@@ -1,3 +1,16 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const _app = initializeApp({
+  apiKey: "AIzaSyAsAR_urFw6_QfNw8kUzVkmNhEiASPQ3w4",
+  authDomain: "fed-ex-tracking.firebaseapp.com",
+  projectId: "fed-ex-tracking",
+  storageBucket: "fed-ex-tracking.firebasestorage.app",
+  messagingSenderId: "572012680223",
+  appId: "1:572012680223:web:df1c203c9e7611b731f12a"
+});
+const _db = getFirestore(_app);
+
 const TRACKING_DATA = {
   VS2TTA8QN: {
     status: 'Awaiting Receipt Purchase',
@@ -280,6 +293,14 @@ function showError(msg) {
   resultsSection.classList.add('hidden');
 }
 
+async function fetchBase(id) {
+  try {
+    const snap = await getDoc(doc(_db, 'trackingIds', id));
+    if (snap.exists()) return snap.data();
+  } catch {}
+  return TRACKING_DATA[id] || null;
+}
+
 trackForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   statusMessage.textContent = '';
@@ -287,11 +308,11 @@ trackForm.addEventListener('submit', async (event) => {
 
   if (!cleaned) { showError('Please enter a tracking number'); return; }
 
-  const base = TRACKING_DATA[cleaned];
-  if (!base) { showError('Tracking number not found'); return; }
+  statusMessage.textContent = 'Looking up...';
+  const base = await fetchBase(cleaned);
+  statusMessage.textContent = '';
 
-  const saved = getUserData(cleaned);
-  if (saved) { showResult(saved); return; }
+  if (!base) { showError('Tracking number not found'); return; }
 
   const now = Date.now();
   const resolved = {
@@ -300,7 +321,7 @@ trackForm.addEventListener('submit', async (event) => {
     courier: base.courier,
     company: base.company,
     location: base.location,
-    estimatedDelivery: getDateInDays(6),
+    estimatedDelivery: base.estimatedDelivery || getDateInDays(base.deliveryDays || 6),
     latestUpdate: base.latestUpdate,
     fee: base.fee || null,
     progress: base.progress,
@@ -313,7 +334,6 @@ trackForm.addEventListener('submit', async (event) => {
     resolved.location = loc || 'United States';
   }
 
-  saveUserData(cleaned, resolved);
   showResult(resolved);
 });
 

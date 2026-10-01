@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — TrackSuite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f4ff;
+      --muted: rgba(160,180,220,0.7);
+      --primary: #4fa3ff;
+      --danger: #f87171;
+      --success: #34d399;
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+
+    /* Login */
+    #loginScreen { max-width: 360px; margin: 80px auto; }
+    #loginScreen h2 { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Form */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+    input, select, textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    select option { background: #1a2035; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Timeline builder */
+    .timeline-entry {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: start;
+    }
+    .timeline-entry textarea { min-height: 60px; }
+    .remove-btn {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.2);
+      color: var(--danger);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      align-self: center;
+    }
+    .remove-btn:hover { background: rgba(248,113,113,0.2); }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: linear-gradient(135deg, #4fa3ff, #2979e8); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(79,163,255,0.3); }
+    .btn-secondary { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .btn-danger { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: var(--danger); }
+    .btn-danger:hover { background: rgba(248,113,113,0.2); }
+    .btn-sm { padding: 8px 16px; font-size: 12px; }
+    .actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 10px 14px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e2d40;
+      border: 1px solid rgba(79,163,255,0.3);
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.error { border-color: rgba(248,113,113,0.4); }
+
+    .msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+    .msg.error { color: var(--danger); }
+    .msg.success { color: var(--success); }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .timeline-entry { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen" class="card" style="display:none">
+  <h2>Admin Login</h2>
+  <div class="form-group" style="margin-bottom:14px">
+    <label>Password</label>
+    <input type="password" id="passwordInput" placeholder="Enter admin password" />
+  </div>
+  <button class="btn btn-primary" onclick="login()">Login</button>
+  <p id="loginMsg" class="msg error"></p>
+</div>
+
+<!-- Main Panel -->
+<div id="adminPanel" class="container" style="display:none">
+  <h1>TrackSuite Admin</h1>
+  <p class="subtitle">Manage tracking IDs — changes go live instantly.</p>
+
+  <!-- Add / Edit Form -->
+  <div class="card">
+    <h2 id="formTitle">Add Tracking ID</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Tracking ID *</label>
+        <input id="f_id" type="text" placeholder="e.g. SYEW26767" />
+      </div>
+      <div class="form-group">
+        <label>Status *</label>
+        <select id="f_status">
+          <option>In Transit</option>
+          <option>Awaiting Custom Approval</option>
+          <option>Awaiting Custom Fee Payment</option>
+          <option>Held for Receipt Confirmation</option>
+          <option>Out for Delivery</option>
+          <option>Delivered</option>
+          <option>Processing</option>
+          <option>Confirmed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Courier</label>
+        <input id="f_courier" type="text" placeholder="e.g. UPS" />
+      </div>
+      <div class="form-group">
+        <label>Company</label>
+        <input id="f_company" type="text" placeholder="e.g. FedEx Logistics" />
+      </div>
+      <div class="form-group">
+        <label>Origin Address</label>
+        <input id="f_origin" type="text" placeholder="e.g. Columbus, Ohio, USA" />
+      </div>
+      <div class="form-group">
+        <label>Current Location</label>
+        <input id="f_location" type="text" placeholder="Leave blank to use IP location" />
+      </div>
+      <div class="form-group">
+        <label>Estimated Delivery</label>
+        <input id="f_delivery" type="text" placeholder="e.g. May 14, 2026 or leave blank" />
+      </div>
+      <div class="form-group">
+        <label>Delivery Days (if no date)</label>
+        <input id="f_days" type="number" placeholder="e.g. 4" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Custom Fee Amount (USD)</label>
+        <input id="f_fee" type="number" placeholder="e.g. 40" min="0" step="0.01" />
+      </div>
+      <div class="form-group">
+        <label>Use IP Location?</label>
+        <select id="f_useIp">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Latest Update Message</label>
+        <textarea id="f_update" placeholder="e.g. Package is held pending custom fee payment..."></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Progress Steps (check completed)</label>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px">
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="p_ordered" checked /> Ordered</label>
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="p_confirmed" /> Confirmed</label>
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="p_shipped" /> Shipped</label>
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="p_out" /> Out for Delivery</label>
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="p_delivered" /> Delivered</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted)">Timeline Events</label>
+        <button class="btn btn-secondary btn-sm" onclick="addTimelineRow()">+ Add Event</button>
+      </div>
+      <div id="timelineBuilder"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="saveTracking()">Save Tracking ID</button>
+      <button class="btn btn-secondary" onclick="resetForm()">Clear</button>
+    </div>
+    <p id="formMsg" class="msg"></p>
+  </div>
+
+  <!-- Existing Tracking IDs -->
+  <div class="card">
+    <h2>All Tracking IDs</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Courier</th>
+            <th>Fee</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="trackingTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsAR_urFw6_QfNw8kUzVkmNhEiASPQ3w4",
+    authDomain: "fed-ex-tracking.firebaseapp.com",
+    projectId: "fed-ex-tracking",
+    storageBucket: "fed-ex-tracking.firebasestorage.app",
+    messagingSenderId: "572012680223",
+    appId: "1:572012680223:web:df1c203c9e7611b731f12a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const ADMIN_PASSWORD = 'admin1234';
+  let editingId = null;
+
+  // ── Auth ──
+  window.login = function() {
+    const val = document.getElementById('passwordInput').value;
+    if (val === ADMIN_PASSWORD) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadTrackingIds();
+    } else {
+      document.getElementById('loginMsg').textContent = 'Incorrect password.';
+    }
+  };
+
+  document.getElementById('passwordInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.login();
+  });
+
+  // ── Timeline rows ──
+  window.addTimelineRow = function(event = '', note = '', hoursAgo = 0.1) {
+    const div = document.createElement('div');
+    div.className = 'timeline-entry';
+    div.innerHTML = `
+      <div class="form-group">
+        <label>Event</label>
+        <input type="text" class="tl-event" value="${event}" placeholder="e.g. Arrived at facility" />
+      </div>
+      <div class="form-group">
+        <label>Note</label>
+        <textarea class="tl-note" placeholder="Details...">${note}</textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="form-group">
+          <label>Hours Ago</label>
+          <input type="number" class="tl-hours" value="${hoursAgo}" min="0" step="0.1" style="width:90px" />
+        </div>
+        <button class="remove-btn" onclick="this.closest('.timeline-entry').remove()">Remove</button>
+      </div>
+    `;
+    document.getElementById('timelineBuilder').appendChild(div);
+  };
+
+  // ── Reset form ──
+  window.resetForm = function() {
+    editingId = null;
+    document.getElementById('formTitle').textContent = 'Add Tracking ID';
+    ['f_id','f_courier','f_company','f_origin','f_location','f_delivery','f_update'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f_status').value = 'In Transit';
+    document.getElementById('f_days').value = '';
+    document.getElementById('f_fee').value = '';
+    document.getElementById('f_useIp').value = 'true';
+    document.getElementById('p_ordered').checked = true;
+    document.getElementById('p_confirmed').checked = false;
+    document.getElementById('p_shipped').checked = false;
+    document.getElementById('p_out').checked = false;
+    document.getElementById('p_delivered').checked = false;
+    document.getElementById('timelineBuilder').innerHTML = '';
+    document.getElementById('formMsg').textContent = '';
+    document.getElementById('f_id').disabled = false;
+  };
+
+  // ── Save ──
+  window.saveTracking = async function() {
+    const id = document.getElementById('f_id').value.trim().toUpperCase();
+    if (!id) { showMsg('formMsg', 'Tracking ID is required.', true); return; }
+
+    const progress = [];
+    if (document.getElementById('p_ordered').checked) progress.push('Ordered');
+    if (document.getElementById('p_confirmed').checked) progress.push('Confirmed');
+    if (document.getElementById('p_shipped').checked) progress.push('Shipped');
+    if (document.getElementById('p_out').checked) progress.push('Out for Delivery');
+    if (document.getElementById('p_delivered').checked) progress.push('Delivered');
+
+    const timelineEntries = Array.from(document.querySelectorAll('.timeline-entry')).map(row => ({
+      event: row.querySelector('.tl-event').value.trim(),
+      note: row.querySelector('.tl-note').value.trim(),
+      hoursAgo: parseFloat(row.querySelector('.tl-hours').value) || 0.1
+    }));
+
+    const feeVal = document.getElementById('f_fee').value;
+    const data = {
+      status: document.getElementById('f_status').value,
+      courier: document.getElementById('f_courier').value.trim(),
+      company: document.getElementById('f_company').value.trim(),
+      originAddress: document.getElementById('f_origin').value.trim(),
+      location: document.getElementById('f_location').value.trim() || null,
+      estimatedDelivery: document.getElementById('f_delivery').value.trim() || null,
+      deliveryDays: parseInt(document.getElementById('f_days').value) || 2,
+      latestUpdate: document.getElementById('f_update').value.trim(),
+      useIpLocation: document.getElementById('f_useIp').value === 'true',
+      progress,
+      timelineTemplate: timelineEntries,
+      fee: feeVal ? parseFloat(feeVal) : null
+    };
+
+    try {
+      await setDoc(doc(db, 'trackingIds', id), data);
+      showToast(`${id} saved successfully!`);
+      showMsg('formMsg', 'Saved!', false);
+      resetForm();
+      loadTrackingIds();
+    } catch (e) {
+      showMsg('formMsg', 'Error: ' + e.message, true);
+    }
+  };
+
+  // ── Load table ──
+  async function loadTrackingIds() {
+    const tbody = document.getElementById('trackingTable');
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);padding:20px">Loading...</td></tr>';
+    try {
+      const snap = await getDocs(collection(db, 'trackingIds'));
+      tbody.innerHTML = '';
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted);padding:20px">No tracking IDs yet.</td></tr>';
+        return;
+      }
+      snap.forEach(d => {
+        const data = d.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${d.id}</strong></td>
+          <td><span class="badge" style="background:rgba(79,163,255,0.1);color:var(--primary)">${data.status}</span></td>
+          <td>${data.courier || '—'}</td>
+          <td>${data.fee ? '$' + data.fee.toFixed(2) : '—'}</td>
+          <td style="display:flex;gap:8px">
+            <button class="btn btn-secondary btn-sm" onclick="editTracking('${d.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteTracking('${d.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" style="color:var(--danger)">Error loading: ${e.message}</td></tr>`;
+    }
+  }
+
+  // ── Edit ──
+  window.editTracking = async function(id) {
+    const snap = await getDocs(collection(db, 'trackingIds'));
+    snap.forEach(d => {
+      if (d.id !== id) return;
+      const data = d.data();
+      editingId = id;
+      document.getElementById('formTitle').textContent = 'Edit Tracking ID';
+      document.getElementById('f_id').value = id;
+      document.getElementById('f_id').disabled = true;
+      document.getElementById('f_status').value = data.status || 'In Transit';
+      document.getElementById('f_courier').value = data.courier || '';
+      document.getElementById('f_company').value = data.company || '';
+      document.getElementById('f_origin').value = data.originAddress || '';
+      document.getElementById('f_location').value = data.location || '';
+      document.getElementById('f_delivery').value = data.estimatedDelivery || '';
+      document.getElementById('f_days').value = data.deliveryDays || '';
+      document.getElementById('f_fee').value = data.fee || '';
+      document.getElementById('f_useIp').value = data.useIpLocation ? 'true' : 'false';
+      document.getElementById('f_update').value = data.latestUpdate || '';
+      const steps = ['Ordered','Confirmed','Shipped','Out for Delivery','Delivered'];
+      const ids = ['p_ordered','p_confirmed','p_shipped','p_out','p_delivered'];
+      ids.forEach((pid, i) => document.getElementById(pid).checked = (data.progress || []).includes(steps[i]));
+      document.getElementById('timelineBuilder').innerHTML = '';
+      (data.timelineTemplate || []).forEach(t => window.addTimelineRow(t.event, t.note, t.hoursAgo));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+
+  // ── Delete ──
+  window.deleteTracking = async function(id) {
+    if (!confirm(`Delete ${id}?`)) return;
+    try {
+      await deleteDoc(doc(db, 'trackingIds', id));
+      showToast(`${id} deleted.`);
+      loadTrackingIds();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  };
+
+  // ── Helpers ──
+  function showToast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (error ? ' error' : '');
+    setTimeout(() => t.className = '', 3000);
+  }
+
+  function showMsg(id, msg, error) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'msg ' + (error ? 'error' : 'success');
+  }
+
+  // ── Init ──
+  document.getElementById('loginScreen').style.display = 'block';
+  window.addTimelineRow();
+</script>
+</body>
+</html>
