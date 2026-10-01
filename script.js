@@ -148,6 +148,24 @@ const TRACKING_DATA = {
     useIpLocation: true,
     deliveryDays: 4
   },
+  GYK789273: {
+    status: 'Awaiting Custom Fee Payment',
+    courier: 'FedEx',
+    company: 'FedEx',
+    location: '159 Baker St, Homer, GA 30547',
+    estimatedDelivery: null,
+    latestUpdate: 'Package is held pending custom fee payment before it can be released for delivery.',
+    fee: '$40',
+    progress: ['Ordered', 'Confirmed', 'Shipped'],
+    timelineTemplate: [
+      { hoursAgo: 0.1,  event: 'Awaiting Custom Fee Payment', note: 'Package is held at the facility. Custom fee payment required before release.' },
+      { hoursAgo: 0.2,  event: 'Arrived at facility',        note: 'Package arrived at Toledo, Ohio distribution center.' },
+      { hoursAgo: 0.35, event: 'Shipment picked up',         note: 'Pickup confirmed by FedEx courier.' },
+      { hoursAgo: 0.5,  event: 'Shipment processed',         note: 'Shipment has entered the carrier network.' }
+    ],
+    originAddress: 'Toledo, Ohio, USA',
+    deliveryDays: 4
+  },
   HBWK13843: {
     status: 'Awaiting Custom Fee Payment',
     courier: 'FedEx',
