@@ -312,11 +312,6 @@ function showError(msg) {
 }
 
 async function fetchBase(id) {
-  try {
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(), 3000));
-    const snap = await Promise.race([getDoc(doc(_db, 'trackingIds', id)), timeout]);
-    if (snap.exists()) return snap.data();
-  } catch {}
   return TRACKING_DATA[id] || null;
 }
 
